@@ -10,6 +10,3 @@
 [submodule "modules/postgresql"]
 	path = modules/postgresql
 	url = git://github.com/akumria/puppet-postgresql.git
-[submodule "nginx"]
-	path = nginx
-	url = git://github.com/BenoitCattie/puppet-nginx.git
