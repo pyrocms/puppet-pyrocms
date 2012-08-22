@@ -13,3 +13,6 @@
 [submodule "modules/nginx"]
 	path = modules/nginx
 	url = git://github.com/BenoitCattie/puppet-nginx.git
+[submodule "modules/apache"]
+	path = modules/apache
+	url = git://github.com/puppetlabs/puppetlabs-apache.git
