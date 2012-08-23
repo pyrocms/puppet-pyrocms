@@ -15,7 +15,7 @@ $docroot = '/vagrant/www/pyrocms/'
 $db_location = "/vagrant/db/pyrocms.sqlite"
 
 # Apache setup
-class {'apache::php': }
+class {'apache::mod::php': }
 
 apache::vhost { 'local.pyrocms':
 	priority => '20',
