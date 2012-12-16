@@ -21,6 +21,7 @@ apache::vhost { 'local.pyrocms':
 	port => '80',
 	docroot => $docroot,
 	configure_firewall => false,
+    override => "All"
 }
 
 a2mod { 'rewrite': ensure => present; }
