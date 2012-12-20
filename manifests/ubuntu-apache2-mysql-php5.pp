@@ -16,7 +16,7 @@ $docroot = '/vagrant/www/pyrocms/'
 # Apache setup
 class {'apache::mod::php': }
 
-apache::vhost { 'local.pyrocms':
+apache::vhost { 'dev.pyrocms.mysql':
 	priority => '20',
 	port => '80',
 	docroot => $docroot,
@@ -28,10 +28,6 @@ a2mod { 'rewrite': ensure => present; }
 # PHP Extensions
 php::module { ['xdebug', 'mysql', 'curl', 'gd'] : 
     notify => [ Service['httpd'], ],
-}
-php::conf { [ 'pdo', 'pdo_mysql']:
-    require => Package['php5-mysql'],
-    notify  => Service['httpd'],
 }
 
 # MySQL Server

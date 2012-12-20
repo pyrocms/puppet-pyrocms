@@ -16,7 +16,7 @@ $docroot = '/vagrant/www/pyrocms/'
 # Apache setup
 class {'apache::mod::php': }
 
-apache::vhost { 'local.pyrocms':
+apache::vhost { 'dev.pyrocms.postgres':
   priority => '20',
   port => '80',
   docroot => $docroot,
