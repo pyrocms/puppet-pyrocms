@@ -11,12 +11,10 @@ include apache
 include php
 include mysql
 
-$docroot = '/vagrant/www/pyrocms/'
-
 # Apache setup
 class {'apache::mod::php': }
 
-apache::vhost { 'dev.pyrocms.mysql':
+apache::vhost { $fqdn :
 	priority => '20',
 	port => '80',
 	docroot => $docroot,

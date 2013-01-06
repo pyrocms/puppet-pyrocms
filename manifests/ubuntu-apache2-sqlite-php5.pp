@@ -11,13 +11,12 @@ include apache
 include php
 include sqlite
 
-$docroot = '/vagrant/www/pyrocms/'
 $db_location = "/vagrant/db/pyrocms.sqlite"
 
 # Apache setup
 class {'apache::mod::php': }
 
-apache::vhost { 'dev.pyrocms.sqlite':
+apache::vhost { $fqdn :
 	priority => '20',
 	port => '80',
 	docroot => $docroot,
