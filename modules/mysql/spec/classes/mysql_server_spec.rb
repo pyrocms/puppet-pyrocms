@@ -4,7 +4,8 @@ describe 'mysql::server' do
   let :constant_parameter_defaults do
     {:config_hash    => {},
      :package_ensure => 'present',
-     :package_name   => 'mysql-server'
+     :enabled        => true,
+     :manage_service => true
     }
   end
 
@@ -27,10 +28,16 @@ describe 'mysql::server' do
   describe 'with osfamily specific defaults' do
     {
       'Debian' => {
-        :service_name => 'mysql'
+        :service_name => 'mysql',
+        :package_name => 'mysql-server'
+      },
+      'FreeBSD' => {
+        :service_name => 'mysql-server',
+        :package_name => 'databases/mysql55-server'
       },
       'Redhat' => {
-        :service_name => 'mysqld'
+        :service_name => 'mysqld',
+        :package_name => 'mysql-server'
       }
     }.each do |osfamily, osparams|
 
@@ -46,7 +53,9 @@ describe 'mysql::server' do
             :package_name   => 'dans_package',
             :package_ensure => 'latest',
             :service_name   => 'dans_service',
-            :config_hash    => {'root_password' => 'foo'}
+            :config_hash    => {'root_password' => 'foo'},
+            :enabled        => false,
+            :manage_service => false
           }
         ].each do |passed_params|
 
@@ -69,14 +78,18 @@ describe 'mysql::server' do
               :ensure => param_values[:package_ensure]
             )}
 
-            it { should contain_service('mysqld').with(
-              :name    => param_values[:service_name],
-              :ensure  => 'running',
-              :enable  => 'true',
-              :require => 'Package[mysql-server]'
-            )}
-
-            it { should contain_service('mysqld').without_provider }
+            it {
+              if param_values[:manage_service]
+                should contain_service('mysqld').with(
+                  :name    => param_values[:service_name],
+                  :ensure  => param_values[:enabled] ? 'running' : 'stopped',
+                  :enable  => param_values[:enabled],
+                  :require => 'Package[mysql-server]'
+                ).without_provider
+              else
+                should_not contain_service('mysqld')
+              end
+            }
           end
         end
       end

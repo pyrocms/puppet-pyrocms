@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-describe 'mysql::java' do
+describe 'mysql::php' do
 
   describe 'on a debian based os' do
     let :facts do
       { :osfamily => 'Debian'}
     end
-    it { should contain_package('mysql-connector-java').with(
-      :name   => 'libmysql-java',
+    it { should contain_package('php-mysql').with(
+      :name   => 'php5-mysql',
       :ensure => 'present'
     )}
   end
@@ -16,8 +16,8 @@ describe 'mysql::java' do
     let :facts do
       { :osfamily => 'FreeBSD'}
     end
-    it { should contain_package('mysql-connector-java').with(
-      :name   => 'databases/mysql-connector-java',
+    it { should contain_package('php-mysql').with(
+      :name   => 'php5-mysql',
       :ensure => 'present'
     )}
   end
@@ -26,16 +26,16 @@ describe 'mysql::java' do
     let :facts do
       {:osfamily => 'Redhat'}
     end
-    it { should contain_package('mysql-connector-java').with(
-      :name   => 'mysql-connector-java',
+    it { should contain_package('php-mysql').with(
+      :name   => 'php-mysql',
       :ensure => 'present'
     )}
     describe 'when parameters are supplied' do
       let :params do
-        {:package_ensure => 'latest', :package_name => 'java-mysql'}
+        {:package_ensure => 'latest', :package_name => 'php53-mysql'}
       end
-      it { should contain_package('mysql-connector-java').with(
-        :name   => 'java-mysql',
+      it { should contain_package('php-mysql').with(
+        :name   => 'php53-mysql',
         :ensure => 'latest'
       )}
     end

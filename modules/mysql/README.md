@@ -2,6 +2,9 @@
 
 This module manages mysql on Linux (RedHat/Debian) distros. A native mysql provider implements database resource type to handle database, database user, and database permission.
 
+Pluginsync needs to be enabled for this module to function properly.
+Read more about pluginsync in our [docs](http://docs.puppetlabs.com/guides/plugins_in_modules.html#enabling-pluginsync)
+
 ## Description
 
 This module uses the fact osfamily which is supported by Facter 1.6.1+. If you do not have facter 1.6.1 in your environment, the following manifests will provide the same functionality in site.pp (before declaring any node):
@@ -38,6 +41,7 @@ This module is based on work by David Schmitt. The following contributor have co
 * Lowe Schmidt
 * Matthias Pigulla
 * William Van Hevelingen
+* Michael Arnold
 
 ## Usage
 
@@ -80,6 +84,15 @@ Creates a database with a user and assign some privileges.
       grant    => ['all'],
     }
 
+### mysql::backup
+Installs a mysql backup script, cronjob, and priviledged backup user.
+
+    class { 'mysql::backup':
+      backupuser     => 'myuser',
+      backuppassword => 'mypassword',
+      backupdir      => '/tmp/backups',
+    }
+
 ### Providers for database types:
 MySQL provider supports puppet resources command:
 
@@ -105,6 +118,8 @@ The custom resources can be used in any other manifests:
 
     database_grant { 'user@localhost/database':
       privileges => ['all'] ,
+      # Or specify individual privileges with columns from the mysql.db table:
+      # privileges => ['Select_priv', 'Insert_priv', 'Update_priv', 'Delete_priv']
     }
 
 A resource default can be specified to handle dependency:
