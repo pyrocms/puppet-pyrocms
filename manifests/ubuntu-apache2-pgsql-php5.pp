@@ -28,10 +28,6 @@ a2mod { 'rewrite': ensure => present; }
 php::module { ['xdebug', 'pgsql', 'curl', 'gd'] : 
     notify => [ Service['httpd'], ],
 }
-php::conf { [ 'pdo', 'pdo_pgsql']:
-    require => Package['php5-pgsql'],
-    notify  => Service['httpd'],
-}
 
 # PostgreSQL Server
 class {'postgresql::server': }
