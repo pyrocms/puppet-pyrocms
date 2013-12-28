@@ -1,8 +1,23 @@
 # PyroCMS Puppet
 
-Configuration for [vagrant](http://vagrantup.com/) and puppet systems, allowing you to build a PyroCMS-friendly environment in next to no-time. 
-That means that instead of needing to install XAMPP/WAMPP/MAMP, fight with the built in version of Apache on your Mac or configure some slow 
-over-the-network VPS to run your code you can use our Vagrant / Puppy setup to run PyroCMS in its own little virtual box.
+Puppet is a convenient and idempotent way to provision a server. That means you can install stuff without needing 
+to do it manually, and lets be honest, setting up a LAMP stack is the most menial task in the world after pagination.
+
+These manifests were designed to work with [vagrant-pyrocms](https://github.com/pyrocms/vagrant-pyrocms), but they will 
+work just fine solo.
+
+## Facter
+
+Puppet uses something called Facter to get information about the enviornment. In our vagrant-pyrocms setup we 
+do the following:
+
+    puppet.facter = { 
+      "fqdn" => "dev.pyrocms.mysql", 
+      "hostname" => "www", 
+      "docroot" => '/vagrant/www/pyrocms/'
+    }
+    
+You will need to configure Factor accordingly.
 
 ## Manfiests
 
