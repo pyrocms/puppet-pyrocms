@@ -4,25 +4,25 @@
 # OS          : Linux     #
 # Database    : MySQL 5   #
 # Web Server  : Apache 2  #
-# PHP version : 5.3       #
+# PHP version : 5.4       #
 ###########################
 
-include apache
 include php
-include mysql
 
 # Apache setup
+class {'apache': 
+    mpm_module => 'prefork'
+}
 class {'apache::mod::php': }
 
 apache::vhost { $fqdn :
 	priority => '20',
 	port => '80',
 	docroot => $docroot,
-	configure_firewall => false,
     override => "All"
 }
 
-a2mod { 'rewrite': ensure => present; }
+apache::mod { 'rewrite': }
 
 # PHP Extensions
 php::module { ['xdebug', 'mysql', 'curl', 'gd'] : 
@@ -30,9 +30,10 @@ php::module { ['xdebug', 'mysql', 'curl', 'gd'] :
 }
 
 # MySQL Server
-class { 'mysql::server':
-  config_hash => { 'root_password' => 'l1k3ab0ss' }
+class { '::mysql::server':
+  root_password    => 'l1k3ab0ss',
 }
+
 
 mysql::db { 'pyrocms':
     user     => 'pyrocms',

@@ -4,25 +4,25 @@
 # OS          : Linux     #
 # Database    : Postgres 9#
 # Web Server  : Apache 2  #
-# PHP version : 5.3       #
+# PHP version : 5.4       #
 ###########################
 
-include apache
 include php
-include postgresql
 
 # Apache setup
+class {'apache': 
+    mpm_module => 'prefork'
+}
 class {'apache::mod::php': }
 
 apache::vhost { $fqdn :
   priority => '20',
   port => '80',
   docroot => $docroot,
-  configure_firewall => false,
   override => "All"
 }
 
-a2mod { 'rewrite': ensure => present; }
+apache::mod { 'rewrite': }
 
 # PHP Extensions
 php::module { ['xdebug', 'pgsql', 'curl', 'gd'] : 
@@ -32,9 +32,9 @@ php::module { ['xdebug', 'pgsql', 'curl', 'gd'] :
 # PostgreSQL Server
 class {'postgresql::server': }
 
-postgresql::db { 'pyrocms':
-    owner     => 'pyrocms',
-    password => 'password',
+postgresql::server::db { 'pyrocms':
+    user     => 'pyrocms',
+    password => postgresql_password('pyrocms', 'password'),
 }
 
 # Other Packages

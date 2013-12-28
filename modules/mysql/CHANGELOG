@@ -1,3 +1,258 @@
+2013-11-13 - Version 2.1.0
+
+Summary:
+
+The most important changes in 2.1.0 are improvements to the my.cnf creation,
+as well as providers.  Setting options to = true strips them to be just the
+key name itself, which is required for some options.
+
+The provider updates fix a number of bugs, from lowercase privileges to
+deprecation warnings.
+
+Last, the new hiera integration functionality should make it easier to
+externalize all your grantts, users, and, databases.  Another great set of
+community submissions helped to make this release.
+
+Features:
+- Some options can not take a argument. Gets rid of the '= true' when an
+option is set to true.
+- Easier hiera integration:  Add hash parameters to mysql::server to allow
+specifying grants, users, and databases.
+
+Fixes:
+- Fix an issue with lowercase privileges in mysql_grant{} causing them to be reapplied needlessly.
+- Changed defaults-file to defaults-extra-file in providers.
+- Ensure /root/.my.cnf is 0600 and root owned.
+- database_user deprecation warning was incorrect.
+- Add anchor pattern for client.pp
+- Documentation improvements.
+- Various test fixes.
+
+2013-10-21 - Version 2.0.1
+
+Summary:
+
+This is a bugfix release to handle an issue where unsorted mysql_grant{}
+privileges could cause Puppet to incorrectly reapply the permissions on
+each run.
+
+Fixes:
+- Mysql_grant now sorts privileges in the type and provider for comparision.
+- Comment and test tweak for PE3.1.
+
+2013-10-14 - Version 2.0.0
+
+Summary:
+
+(Previously detailed in the changelog for 2.0.0-rc1)
+
+This module has been completely refactored and works significantly different.
+The changes are broad and touch almost every piece of the module.
+
+See the README.md for full details of all changes and syntax.
+Please remain on 1.0.0 if you don't have time to fully test this in dev.
+
+* mysql::server, mysql::client, and mysql::bindings are the primary interface
+classes.
+* mysql::server takes an `options_override` parameter to set my.cnf options,
+with the hash format: { 'section' => { 'thing' => 'value' }}
+* mysql attempts backwards compatibility by forwarding all parameters to
+mysql::server.
+
+2013-10-09 - Version 2.0.0-rc5
+
+Summary:
+
+Hopefully the final rc!  Further fixes to mysql_grant (stripping out the
+cleverness so we match a much wider range of input.)
+
+Fixes:
+- Make mysql_grant accept '.*'@'.*' in terms of input for user@host.
+
+2013-10-09 - Version 2.0.0-rc4
+
+Summary:
+
+Bugfixes to mysql_grant and mysql_user form the bulk of this rc, as well as
+ensuring that values in the override_options hash that contain a value of ''
+are created as just "key" in the conf rather than "key =" or "key = false".
+
+Fixes:
+- Improve mysql_grant to work with IPv6 addresses (both long and short).
+- Ensure @host users work as well as user@host users.
+- Updated my.cnf template to support items with no values.
+
+2013-10-07 - Version 2.0.0-rc3
+
+Summary:
+
+Fix mysql::server::monitor's use of mysql_user{}.
+
+Fixes:
+- Fix myql::server::monitor's use of mysql_user{} to grant the proper
+permissions.  Add specs as well.  (Thanks to treydock!)
+
+2013-10-03 - Version 2.0.0-rc2
+
+Summary:
+
+Bugfixes
+
+Fixes:
+- Fix a duplicate parameter in mysql::server
+
+2013-10-03 - Version 2.0.0-rc1
+
+Summary:
+
+This module has been completely refactored and works significantly different.
+The changes are broad and touch almost every piece of the module.
+
+See the README.md for full details of all changes and syntax.
+Please remain on 1.0.0 if you don't have time to fully test this in dev.
+
+* mysql::server, mysql::client, and mysql::bindings are the primary interface
+classes.
+* mysql::server takes an `options_override` parameter to set my.cnf options,
+with the hash format: { 'section' => { 'thing' => 'value' }}
+* mysql attempts backwards compatibility by forwarding all parameters to
+mysql::server.
+
+2013-09-23 - Version 1.0.0
+
+Summary:
+
+This release introduces a number of new type/providers, to eventually
+replace the database_ ones.  The module has been converted to call the
+new providers rather than the previous ones as they have a number of
+fixes, additional options, and work with puppet resource.
+
+This 1.0.0 release precedes a large refactoring that will be released
+almost immediately after as 2.0.0.
+
+Features:
+- Added mysql_grant, mysql_database, and mysql_user.
+- Add `mysql::bindings` class and refactor all other bindings to be contained underneath mysql::bindings:: namespace.
+- Added support to back up specified databases only with 'mysqlbackup' parameter.
+- Add option to mysql::backup to set the backup script to perform a mysqldump on each database to its own file
+
+Bugfixes:
+- Update my.cnf.pass.erb to allow custom socket support
+- Add environment variable for .my.cnf in mysql::db.
+- Add HOME environment variable for .my.cnf to mysqladmin command when
+(re)setting root password
+
+2013-07-15 - Version 0.9.0
+Features:
+- Add `mysql::backup::backuprotate` parameter
+- Add `mysql::backup::delete_before_dump` parameter
+- Add `max_user_connections` attribute to `database_user` type
+
+Bugfixes:
+- Add client package dependency for `mysql::db`
+- Remove duplicate `expire_logs_days` and `max_binlog_size` settings
+- Make root's `.my.cnf` file path dynamic
+- Update pidfile path for Suse variants
+- Fixes for lint
+
+2013-07-05 - Version 0.8.1
+Bugfixes:
+ - Fix a typo in the Fedora 19 support.
+
+2013-07-01 - Version 0.8.0
+Features:
+ - mysql::perl class to install perl-DBD-mysql.
+ - minor improvements to the providers to improve reliability
+ - Install the MariaDB packages on Fedora 19 instead of MySQL.
+ - Add new `mysql` class parameters:
+  -  `max_connections`: The maximum number of allowed connections.
+  -  `manage_config_file`: Opt out of puppetized control of my.cnf.
+  -  `ft_min_word_len`: Fine tune the full text search.
+  -  `ft_max_word_len`: Fine tune the full text search.
+ - Add new `mysql` class performance tuning parameters:
+  -  `key_buffer`
+  -  `thread_stack`
+  -  `thread_cache_size`
+  -  `myisam-recover`
+  -  `query_cache_limit`
+  -  `query_cache_size`
+  -  `max_connections`
+  -  `tmp_table_size`
+  -  `table_open_cache`
+  -  `long_query_time`
+ - Add new `mysql` class replication parameters:
+  -  `server_id`
+  -  `sql_log_bin`
+  -  `log_bin`
+  -  `max_binlog_size`
+  -  `binlog_do_db`
+  -  `expire_logs_days`
+  -  `log_bin_trust_function_creators`
+  -  `replicate_ignore_table`
+  -  `replicate_wild_do_table`
+  -  `replicate_wild_ignore_table`
+  -  `expire_logs_days`
+  -  `max_binlog_size`
+
+Bugfixes:
+ - No longer restart MySQL when /root/.my.cnf changes.
+ - Ensure mysql::config runs before any mysql::db defines.
+
+2013-06-26 - Version 0.7.1
+Bugfixes:
+- Single-quote password for special characters
+- Update travis testing for puppet 3.2.x and missing Bundler gems
+
+2013-06-25 - Version 0.7.0
+This is a maintenance release for community bugfixes and exposing
+configuration variables.
+
+* Add new `mysql` class parameters:
+ -  `basedir`: The base directory mysql uses
+ -  `bind_address`: The IP mysql binds to
+ -  `client_package_name`: The name of the mysql client package
+ -  `config_file`: The location of the server config file
+ -  `config_template`: The template to use to generate my.cnf
+ -  `datadir`: The directory MySQL's datafiles are stored
+ -  `default_engine`: The default engine to use for tables
+ -  `etc_root_password`: Whether or not to add the mysql root password to
+ /etc/my.cnf
+ -  `java_package_name`: The name of the java package containing the java
+ connector
+ -  `log_error`: Where to log errors
+ -  `manage_service`: Boolean dictating if mysql::server should manage the
+ service
+ -  `max_allowed_packet`: Maximum network packet size mysqld will accept
+ -  `old_root_password`: Previous root user password
+ -  `php_package_name`: The name of the phpmysql package to install
+ -  `pidfile`: The location mysql will expect the pidfile to be
+ -  `port`: The port mysql listens on
+ -  `purge_conf_dir`: Value fed to recurse and purge parameters of the
+ /etc/mysql/conf.d resource
+ -  `python_package_name`: The name of the python mysql package to install
+ -  `restart`: Whether to restart mysqld
+ -  `root_group`: Use specified group for root-owned files
+ -  `root_password`: The root MySQL password to use
+ -  `ruby_package_name`: The name of the ruby mysql package to install
+ -  `ruby_package_provider`: The installation suite to use when installing the
+ ruby package
+ -  `server_package_name`: The name of the server package to install
+ -  `service_name`: The name of the service to start
+ -  `service_provider`: The name of the service provider
+ -  `socket`: The location of the MySQL server socket file
+ -  `ssl_ca`: The location of the SSL CA Cert
+ -  `ssl_cert`: The location of the SSL Certificate to use
+ -  `ssl_key`: The SSL key to use
+ -  `ssl`: Whether or not to enable ssl
+ -  `tmpdir`: The directory MySQL's tmpfiles are stored
+* Deprecate `mysql::package_name` parameter in favor of
+`mysql::client_package_name`
+* Fix local variable template deprecation
+* Fix dependency ordering in `mysql::db`
+* Fix ANSI quoting in queries
+* Fix travis support (but still messy)
+* Fix typos
+
 2013-01-11 - Version 0.6.1
 * Fix providers when /root/.my.cnf is absent
 

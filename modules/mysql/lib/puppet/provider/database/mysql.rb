@@ -1,5 +1,5 @@
 Puppet::Type.type(:database).provide(:mysql) do
-  desc "Manages MySQL database."
+  desc 'Manages MySQL database.'
 
   defaultfor :kernel => 'Linux'
 
@@ -8,7 +8,7 @@ Puppet::Type.type(:database).provide(:mysql) do
 
   def self.defaults_file
     if File.file?("#{Facter.value(:root_home)}/.my.cnf")
-      "--defaults-file=#{Facter.value(:root_home)}/.my.cnf"
+      "--defaults-extra-file=#{Facter.value(:root_home)}/.my.cnf"
     else
       nil
     end
@@ -19,7 +19,7 @@ Puppet::Type.type(:database).provide(:mysql) do
   end
 
   def self.instances
-    mysql([defaults_file, '-NBe', "show databases"].compact).split("\n").collect do |name|
+    mysql([defaults_file, '-NBe', 'show databases'].compact).split("\n").collect do |name|
       new(:name => name)
     end
   end
@@ -42,7 +42,7 @@ Puppet::Type.type(:database).provide(:mysql) do
 
   def exists?
     begin
-      mysql([defaults_file, '-NBe', "show databases"].compact).match(/^#{@resource[:name]}$/)
+      mysql([defaults_file, '-NBe', 'show databases'].compact).match(/^#{@resource[:name]}$/)
     rescue => e
       debug(e.message)
       return nil

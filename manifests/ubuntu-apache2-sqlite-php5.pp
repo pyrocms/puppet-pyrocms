@@ -4,37 +4,31 @@
 # OS          : Linux     #
 # Database    : SQLite 3  #
 # Web Server  : Apache 2  #
-# PHP version : 5.3       #
+# PHP version : 5.4       #
 ###########################
-
-include apache
-include php
-include sqlite
 
 $db_location = "/vagrant/db/pyrocms.sqlite"
 
+include php
+
 # Apache setup
+class {'apache': 
+    mpm_module => 'prefork'
+}
 class {'apache::mod::php': }
 
 apache::vhost { $fqdn :
-	priority => '20',
-	port => '80',
-	docroot => $docroot,
-	configure_firewall => false,
+  priority => '20',
+  port => '80',
+  docroot => $docroot,
+  override => "All"
 }
 
-a2mod { 'rewrite': ensure => present; }
+apache::mod { 'rewrite': }
 
-
-# PHP Extensions
-package { 'php5-sqlite' : ensure => 'installed' }
-
+# PHP Modules
 php::module { ['xdebug', 'curl', 'gd'] : 
     notify => [ Service['httpd'], ],
-}
-php::conf { [ 'pdo', 'pdo_sqlite']:
-    require => Package['sqlite'],
-    notify  => Service['httpd'],
 }
 
 # SQLite

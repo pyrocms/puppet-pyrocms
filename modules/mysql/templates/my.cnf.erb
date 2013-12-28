@@ -1,52 +1,17 @@
-[client]
-port    = <%= port %>
-socket    = <%= socket %>
-[mysqld_safe]
-socket    = <%= socket %>
-nice    = 0
-<% if log_error == 'syslog' -%>
-syslog
+<% @options.sort.map do |k,v| -%>
+<% if v.is_a?(Hash) -%>
+[<%= k %>]
+<% @options[k].sort.map do |ki, vi| -%>
+<% if vi == true -%>
+<%= ki %>
+<% elsif vi and vi != '' -%>
+<%= ki %> = <%= vi %>
+<% elsif vi -%>
+<%= ki %>
 <% end -%>
-[mysqld]
-user    = mysql
-pid-file  = <%= pidfile %>
-socket    = <%= socket %>
-port      = <%= port %>
-basedir   = <%= basedir %>
-datadir   = <%= datadir %>
-tmpdir    = /tmp
-skip-external-locking
-
-<% if bind_address %>
-bind-address    = <%= bind_address %>
-<% end %> 
-
-key_buffer         = 16M
-max_allowed_packet = 16M
-thread_stack       = 192K
-thread_cache_size  = 8
-myisam-recover     = BACKUP
-query_cache_limit  = 1M
-query_cache_size   = 16M
-<% if log_error != 'syslog' -%>
-log_error          = <%= log_error %>
 <% end -%>
-expire_logs_days   = 10
-max_binlog_size    = 100M
-<% if default_engine != 'UNSET' %>
-default-storage-engine = <%= default_engine %>
-<% end %>
-<% if ssl == true %>
-ssl-ca    = <%= ssl_ca %>
-ssl-cert  = <%= ssl_cert %>
-ssl-key   = <%= ssl_key %>
-<% end %>
 
-[mysqldump]
-quick
-quote-names
-max_allowed_packet = 16M
-[mysql]
-[isamchk]
-key_buffer    = 16M
+<% end -%>
+<% end -%>
+
 !includedir /etc/mysql/conf.d/
