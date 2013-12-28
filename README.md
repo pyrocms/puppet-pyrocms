@@ -17,7 +17,7 @@ do the following:
       "docroot" => '/vagrant/www/pyrocms/'
     }
     
-You will need to configure Factor accordingly.
+You will need to configure Facter accordingly.
 
 ## Manfiests
 
