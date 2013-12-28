@@ -21,13 +21,13 @@ are rather broken for that version. 12.10 works very nicely.
 
 ### MySQL Credentials
 
-__Database:__ pyrocms
+__Database:__ pyrocms  
 __User:__ pyrocms  
 __Pass:__ password  
 
 ### PostgreSQL Credentials
 
-__Database:__ pyrocms
+__Database:__ pyrocms  
 __User:__ pyrocms  
 __Pass:__ password  
 
